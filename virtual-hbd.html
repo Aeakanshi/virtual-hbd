@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js "></script> -->
+    
+    <title>Spin & Act</title>
+
+  <style type="text/css">
+    html, body {
+      background: #000000;
+      width: 100%;
+      height: 100%;
+    }
+    /*section {
+    margin: 2em 0;
+    }*/
+    h1 {
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+    canvas {
+  cursor: crosshair;
+  display: block;
+}
+
+.bcard {
+  position: relative;
+  width: 300px;
+  height: 425px;
+  border: 10px solid #73BFB5;
+  margin: 50px auto 0 auto;
+  box-shadow: inset 10px 0px 15px 0px rgba(0,0,0,0.1);
+  background-color: rgb(230, 240, 230);
+}
+
+.bcard .text-container {
+  width: 80%;
+  height: 80%;
+  margin: auto;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
+
+.bcard .text-container #head {
+  font-family: 'Nobile', sans-serif;
+  font-size: 1.5em;
+  margin: 60px auto 60px auto;
+}
+
+.bcard p {
+  font-size: 1.1em;
+  line-height: 1.4;
+  font-family: 'Nobile';
+  color: #331717;
+  font-style: italic;
+  text-align: center;
+  margin: 30px auto 0px auto;
+}
+
+.bcard .front-face { 
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: -10px 0px 0px -10px;
+      border: 10px solid #73BFB5;
+    backface-visibility: hidden;
+    background-color: #ffeb3b;
+  /* background-image: url($cover-image); */
+  background-size: contain;
+  transform-style: preserve-3d;
+  transform-origin: 0% 50%;
+  transform: perspective(800px) rotateY(0deg);
+  transition: all 0.8s ease-in-out;
+}
+
+.bcard:hover .front-face {
+  transform: perspective(800px) rotateY(-170deg);
+  background-color: rgb(115-50, 163-50, 191-50);
+}
+
+.bcard:hover .back-face {
+  transform: perspective(800px) rotateY(-170deg);
+  box-shadow: 7px 0px 5px 0px rgba(0,0,0,0.3), inset 2px 0px 15px 0px rgba(0,0,0,0.1);
+  background-color: rgb(210, 220, 210);
+}
+
+.bcard .back-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 10px solid #73BFB5;
+  margin: -10px 0px 0px -10px;
+  backface-visibility: visible;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,.5));
+  transform-style: preserve-3d;
+  transform-origin: 0% 50%;
+  transform: perspective(800px) rotateY(0deg);
+  transition: all 0.8s ease-in-out;
+  background-color: rgb(230, 240, 230);
+  box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.1);
+}
+
+.cover-shape-large {
+  position: absolute;
+  width: 65%;
+  height: 48%;
+  top: 25%;
+  left: 18%;
+  /* transform: rotateZ(45deg); */
+}
+
+.cover-shape-large .shape-block, .cover-shape-large .shape-diamond {
+  background-color: #73bf8f;
+}
+
+.cover-shape-small {
+  position: absolute;
+  width: 50%;
+  height: 36%;
+  top: 30%;
+  left: 25%;
+}
+
+.shape-block {
+  position: relative;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 50px;
+  box-shadow: 0 0 20px 0 rgba(0,0,0,0.5);
+}
+.shape-block-img {
+    position: relative;
+    width: 62%;
+    margin: 18px auto;
+}
+
+/*#shape-image {
+  background-image: url('http://freedesignfile.com/upload/2013/02/Birthday-cake-vector-4.jpg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}*/
+
+.shape-diamond {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  box-shadow: 0 0 10px 0 rgba(0,0,0,0.5);
+  transform: rotateZ(45deg);
+}
+
+.cake {
+    position: absolute;
+    width: 250px;
+    height: 200px;
+    top: 45%;
+    left: 50%;
+    margin-top: -70px;
+    margin-left: -125px;
+}
+
+.cake > * {
+    position: absolute;
+    /* backface-visibility: hidden; */
+}
+
+.layer {
+    position: absolute;
+    display: block;
+    width: 100px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #553c13;
+    box-shadow: 0 2px 0px #6a4b18, 0 4px 0px #33240b, 0 6px 0px #32230b, 0 8px 0px #31230b, 0 10px 0px #30220b, 0 12px 0px #2f220b, 0 14px 0px #2f210a, 0 16px 0px #2e200a, 0 18px 0px #2d200a, 0 20px 0px #2c1f0a, 0 22px 0px #2b1f0a, 0 24px 0px #2a1e09, 0 26px 0px #2a1d09, 0 28px 0px #291d09, 0 30px 0px #281c09;
+}
+
+.layer-top { top: 0px; }
+.layer-middle { top: 33px; }
+.layer-bottom { top: 66px; }
+
+.icing {
+    top: 2px;
+    left: 5px;
+    background-color: #f0e4d0;
+    width: 240px;
+    height: 90px;
+    border-radius: 50%;
+}
+.icing:before {
+        content: "";
+        position: absolute;
+        top: 4px;
+        right: 5px;
+        bottom: 6px;
+        left: 5px;
+        background-color: lighten(#f0e4d0, 3%);
+        box-shadow: 0 0 4px lighten(#f0e4d0, 5%),
+        border-radius: 50%;
+    }
+
+.drip {
+    display: block;
+    width: 50px;
+    height: 60px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    background-color: #f0e4d0;
+}
+
+.drip1 {
+    top: 55px;
+    left: 5px;
+    transform: skewY(15deg);
+    height: 48px;
+    width: 40px;
+}
+
+.drip2 {
+    top: 75px;
+    left: 181px;
+    transform: skewY(-15deg);
+}
+
+.drip3 {
+    top: 84px;
+    left: 90px;
+    width: 80px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
+
+.candle {
+    background-color: #bf737d;
+    width: 16px;
+    height: 50px;
+    border-radius: 8px / 4px;
+    top: -20px;
+    left: 50%;
+    margin-left: -8px;
+}
+ .candle:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 16px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: lighten(#bf737d, 10%);
+    }
+
+.flame {
+    position: absolute;
+    background-color: orange;
+    width: 15px;
+    height: 35px;
+    border-radius: 10px 10px 10px 10px / 25px 25px 10px 10px;
+    top: -34px;
+    left: 50%;
+    margin-left: -7.5px;
+    /* z-index: 10; */
+    box-shadow:
+        0 0 10px rgba(orange, 0.5),
+        0 0 20px rgba(orange, 0.5),
+        0 0 60px rgba(orange, 0.5),
+        0 0 80px rgba(orange, 0.5);
+    transform-origin: 50% 90%;
+    animation: flicker 1s ease-in-out infinite;
+}
+
+@keyframes flicker {
+    0% {
+        /* transform: rotateZ(5deg); */
+        box-shadow: 
+            0 0 10px rgba(orange, 0.2),
+            0 0 20px rgba(orange, 0.2),
+            0 0 60px rgba(orange, 0.2),
+            0 0 80px rgba(orange, 0.2) }
+    25% {
+        /* transform: rotateZ(-5deg); */
+        box-shadow:
+            0 0 10px rgba(orange, 0.5),
+            0 0 20px rgba(orange, 0.5),
+            0 0 60px rgba(orange, 0.5),
+            0 0 80px rgba(orange, 0.5) }
+    50% {
+        /* transform: rotateZ(10deg); */
+        box-shadow:
+            0 0 10px rgba(orange, 0.3),
+            0 0 20px rgba(orange, 0.3),
+            0 0 60px rgba(orange, 0.3),
+            0 0 80px rgba(orange, 0.3) }
+    75% {
+        /* transform: rotateZ(-10deg); */
+        box-shadow:
+            0 0 10px rgba(orange, 0.4),
+            0 0 20px rgba(orange, 0.4),
+            0 0 60px rgba(orange, 0.4),
+            0 0 80px rgba(orange, 0.4) }
+    100% {
+        /* transform: rotateZ(5deg); */
+        box-shadow:
+            0 0 10px rgba(orange, 0.5),
+            0 0 20px rgba(orange, 0.5),
+            0 0 60px rgba(orange, 0.5),
+            0 0 80px rgba(orange, 0.5) }
+}
+
+/* ----- GIFT CODE ----- */
+.wrapper {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 10px;
+  position: relative;
+} 
+
+h1 {
+  text-align: center;
+  font-family: cursive;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+img {
+  max-width: 86%;
+  height: auto;
+  margin-top: 20px;
+}
+
+.table:after  {
+  content: "";
+  display: block;
+  clear: both;
+}
+ 
+.field {
+  width: 14%;
+  margin: 1% 1%;
+  height: 150px;
+  border: 1px solid #000;
+  border-radius: 8px;
+  float: left;
+  cursor: pointer;
+}
+
+
+.inner-wrap {
+  width: 100%;
+  height: 100%;
+  transition: all 0.6s;.
+  -webkit-transition: all 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.front {
+  background: url(https://res.cloudinary.com/nikola1970/image/upload/v1456692129/bg_qsnd0u.jpg) no-repeat top center;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  z-index: 2;
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
+  -o-transform: rotateY(0deg);
+}
+
+.flipped {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+
+}
+
+.front, .back {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.back {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  text-align: center;
+}
+
+.result p {
+    font-size: 46px;
+    font-family: cursive;
+    color: rgb(217, 103, 29);
+}
+
+.result {
+    position: absolute;
+    right: -185px;
+    top: 58px;
+}
+
+p.counter {
+    text-align: center;
+}
+
+span {
+    text-align: center;
+    display: block;
+    font-family: cursive;
+}
+
+.wrapper > p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+      
+  </style>
+
+  </head>
+  
+  <body>
+    <div id="home" class="main-area">   
+    <canvas id="canvas"></canvas>
+      <div class="container">
+        <section style="background: #ffffe0;">
+          <div class="bcard">
+          <div class="back-face">
+            <img src="https://i.pinimg.com/originals/e8/3f/2b/e83f2befda8d4a1524bcffde32f18fbc.gif" style="max-width: 100%;
+            width: 100%; margin: 4em auto;" />
+          </div>
+          <div class="front-face">
+            <div class="cover-shape-large">
+              <div class="shape-diamond"></div>
+              <div class="shape-block"></div>
+            </div>
+            <div class="cover-shape-small">
+              <div class="shape-diamond"></div>
+              <div class="shape-block">
+                <img class="shape-block-img" src="https://freedesignfile.com/upload/2013/02/Birthday-cake-vector-4.jpg" style="">
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-container">
+            <p id="head">Happy Birthday <br/>To You!</p> 
+
+            <p><i>“</i>Wishing you a beautiful day with good health and happiness forever. Happy birthday!<i>”</i></p>
+          </div>
+        </div>
+        </section>
+
+        <section style="background: #fff7e5; padding-top:2em;">
+          <div class="container">
+            <div class="wrapper">
+  <h1>Lets Play A Memory Game</h1>
+<!--   <p>(Not optimized for mobile phones)</p> -->
+  <div class="result">
+    <p>Result</p>
+    <span>(Less is better!)</span>
+    <p class="counter">0</p>
+  </div>
+    <div class="table">
+      <div class="field" id="1">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="2">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="3">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="4">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="5">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="6">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="7">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="8">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="9">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="10">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="11">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="12">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="13">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="14">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="15">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="16">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="17">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="18">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="19">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="20">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="21">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="22">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="23">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+      <div class="field" id="24">
+        <div class="inner-wrap">
+          <div class="front"></div>
+          <div class="back"></div>  
+        </div>
+      </div>
+
+
+      
+    </div>
+  </div>
+</div>
+        </section>
+      </div>             
+    </div>
+   <!-- <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script> -->
+
+ <script type="text/javascript">
+   
+   $(document).ready(function(){
+  
+var checkArray = []; // checking if both clicked fields are the same fruit
+var idCheck = []; // helper array for storing clicked fields IDs so i can remove "flipped" class if they are different
+var counter = 0;
+var end = 0; // for detecting if all fields are done
+var fields = document.querySelectorAll(".back");
+var natureSound = new Audio("http://k003.kiwi6.com/hotlink/2ai7iwz2j6/nature.mp3");
+var spark = new Audio("http://k003.kiwi6.com/hotlink/qdpr7bioht/spark.mp3");
+var win = new Audio("http://k003.kiwi6.com/hotlink/eptlrqspgk/win.mp3");
+
+
+var images = [
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692132/ananas_uukegu.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/apple_khwnkz.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/apricot_bvge7o.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/banana_xks3tr.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/cake_pqvm0z.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/cherry_gtzbks.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/grapes_wshdtl.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/lemon_hfksjg.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/pear_vdpyqc.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/plum_rncxxc.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/strawberry_yr6sa1.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692134/watermelon_wfzuz8.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692132/ananas_uukegu.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/apple_khwnkz.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/apricot_bvge7o.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/banana_xks3tr.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/cake_pqvm0z.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/cherry_gtzbks.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/grapes_wshdtl.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/lemon_hfksjg.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/pear_vdpyqc.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/plum_rncxxc.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692133/strawberry_yr6sa1.png",
+  "https://res.cloudinary.com/nikola1970/image/upload/v1456692134/watermelon_wfzuz8.png"
+];
+
+function clicked() { // clicked function so i can unbind click event to prevet shit like clicking more then 2 fields at one try
+  if ($(this).find(".inner-wrap").hasClass("flipped")) {
+    return;
+  }
+  $(this).find(".inner-wrap").toggleClass("flipped");
+  checkArray.push($(this).find("img").attr("src"));
+  idCheck.push($(this).attr("id"));
+  check();
+}
+
+$(".field").on("click", clicked);
+  
+
+function restart() {
+  $(".back").find("img").remove(); //remove all current images from the field
+  $(".field .inner-wrap").removeClass("flipped"); // remove flipped class so they can flip back again at the starting position
+  checkArray = []; // empty check array
+  idCheck = []; // empty IDs check array
+  counter = 0; // reset counter
+  end = 0; // reset ending variable
+  startGame();
+}
+
+function checkEnd() {
+  if (end === 24) { //if all 24 fields are uncovered 
+    win.play();
+    alert("Game is over! Your score is " + counter);
+    restart();
+  }
+}
+
+function shuffleArray(array) { // shuffle array with images
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+function startGame() {
+
+  natureSound.play(); // play the background music
+
+  var arr = shuffleArray(images); // stores the array of shuffled images
+
+  for (var i = 0; i < fields.length; i++) { // appending those images to the div with class "back"
+    var img = document.createElement("img");
+    img.src = arr[i];
+    fields[i].appendChild(img);
+  }
+
+
+}
+
+function check() {
+  if (checkArray.length === 2) { // if fields are clicked 2 times we are doing check
+    $(".field").off("click", clicked); // disabling click event to prevet shit
+    setTimeout(function(){
+      if (checkArray[0] !== checkArray[1]) { // if there is  no match
+        $("#" + idCheck[0]).find(".inner-wrap").removeClass("flipped"); // flip the field back
+        $("#" + idCheck[1]).find(".inner-wrap").removeClass("flipped"); // second one flip back as well
+        counter++;
+        checkArray = []; //empty checking array for the next 2 clicks
+        idCheck = []; // same with this one
+        $(".field").on("click", clicked); // bind the click back again
+      } else {
+        spark.play();
+        counter++;
+        end += 2; // if there is a match "end" is raised by 2 as 2 fields are uncovered
+        checkArray = []; // empty array for the next try
+        idCheck = []; // this one as well
+        checkEnd(); // check if game has eneded
+        $(".field").on("click", clicked); // bind click again
+      }
+      document.querySelector(".counter").innerHTML = counter;
+    }, 800);  
+  }
+}
+
+
+
+startGame();
+
+});
+
+   </script>
+
+   <script type="text/javascript">
+     var padding = {top:20, right:40, bottom:0, left:0},
+            w = 500 - padding.left - padding.right,
+            h = 500 - padding.top  - padding.bottom,
+            r = Math.min(w, h)/2,
+            rotation = 0,
+            oldrotation = 0,
+            picked = 100000,
+            oldpick = [],
+            color = d3.scale.category20();//category20c()
+            //randomNumbers = getRandomNumbers();
+        //http://osric.com/bingo-card-generator/?title=HTML+and+CSS+BINGO!&words=padding%2Cfont-family%2Ccolor%2Cfont-weight%2Cfont-size%2Cbackground-color%2Cnesting%2Cbottom%2Csans-serif%2Cperiod%2Cpound+sign%2C%EF%B9%A4body%EF%B9%A5%2C%EF%B9%A4ul%EF%B9%A5%2C%EF%B9%A4h1%EF%B9%A5%2Cmargin%2C%3C++%3E%2C{+}%2C%EF%B9%A4p%EF%B9%A5%2C%EF%B9%A4!DOCTYPE+html%EF%B9%A5%2C%EF%B9%A4head%EF%B9%A5%2Ccolon%2C%EF%B9%A4style%EF%B9%A5%2C.html%2CHTML%2CCSS%2CJavaScript%2Cborder&freespace=true&freespaceValue=Web+Design+Master&freespaceRandom=false&width=5&height=5&number=35#results
+        var data = [
+                    {"label":"",  "value":1,  "question":"Kajra Re, Kajra Re"}, // padding
+                    {"label":"",  "value":2,  "question":"Sing Haryanvi song"}, //font-family
+                    {"label":"",  "value":3,  "question":"Shayari"}, //color
+                    {"label":"",  "value":4,  "question":"Mimicry"}, //font-weight
+                    {"label":"",  "value":5,  "question":"Hindi Varnmala"}, //font-size
+                    {"label":"",  "value":6,  "question":"Sing a sad song with a laughing face."}, //background-color
+                    {"label":"",  "value":7,  "question":"Sanskrit shlok with hindi meaning"}, //nesting
+                    {"label":"",  "value":8,  "question":"Tell a PJ"}, //bottom
+                    {"label":"",  "value":9,  "question":"You Are Lucky"}, //sans-serif
+                    {"label":"", "value":10, "question":"Fill your mouth with water and sing a song."},
+                    {"label":"",  "value":11,  "question":"Try to lick your elbow while singing an alphabet"}, // padding
+                    {"label":"",  "value":12,  "question":"Movie dialog"}, //font-family
+                    {"label":"",  "value":13,  "question":"Translate these dialoude in English:1-जली को आग कहते हैं, बुझी को राख कहते हैं, जिस राख से बारूद बने, उसे विश्वनाथ करते हैं। /  2-एक चुटकी सिंदूर की कीमत तुम क्या जानो रमेश बाबू…ईश्वर का आशीर्वाद होता है, एक चुटकी सिंदूर…सुहागन के सर का ताज होता है, एक चुटकी सिंदूर…हर औरत का ख्वाब होता है. एक चुटकी सिंदूर…"},
+                    {"label":"",  "value":14,  "question":"Get a spoon in your mouth and Give your introduction"} //font-weight
+                
+        ];
+        var svg = d3.select('#chart')
+            .append("svg")
+            .data([data])
+            .attr("width",  w + padding.left + padding.right)
+            .attr("height", h + padding.top + padding.bottom);
+        var container = svg.append("g")
+            .attr("class", "chartholder")
+            .attr("transform", "translate(" + (w/2 + padding.left) + "," + (h/2 + padding.top) + ")");
+        var vis = container
+            .append("g");
+            
+        var pie = d3.layout.pie().sort(null).value(function(d){return 1;});
+        // declare an arc generator function
+        var arc = d3.svg.arc().outerRadius(r);
+        // select paths, use arc generator to draw
+        var arcs = vis.selectAll("g.slice")
+            .data(pie)
+            .enter()
+            .append("g")
+            .attr("class", "slice");
+            
+        arcs.append("path")
+            .attr("fill", function(d, i){ return color(i); })
+            .attr("d", function (d) { return arc(d); });
+        // add the text
+        arcs.append("text").attr("transform", function(d){
+                d.innerRadius = 0;
+                d.outerRadius = r;
+                d.angle = (d.startAngle + d.endAngle)/2;
+                return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(" + (d.outerRadius -14) +")";
+            })
+            .attr("text-anchor", "end")
+            .text( function(d, i) {
+                return data[i].label;
+            });
+        container.on("click", spin);
+        function spin(d){
+            
+            container.on("click", null);
+            //all slices have been seen, all done
+            console.log("OldPick: " + oldpick.length, "Data length: " + data.length);
+            if(oldpick.length == data.length){
+                console.log("done");
+                container.on("click", null);
+                return;
+            }
+            var  ps       = 360/data.length,
+                 pieslice = Math.round(1440/data.length),
+                 rng      = Math.floor((Math.random() * 1440) + 360);
+                
+            rotation = (Math.round(rng / ps) * ps);
+            
+            picked = Math.round(data.length - (rotation % 360)/ps);
+            picked = picked >= data.length ? (picked % data.length) : picked;
+            if(oldpick.indexOf(picked) !== -1){
+                d3.select(this).call(spin);
+                return;
+            } else {
+                oldpick.push(picked);
+            }
+            rotation += 90 - Math.round(ps/2);
+            vis.transition()
+                .duration(3000)
+                .attrTween("transform", rotTween)
+                .each("end", function(){
+                    //mark question as seen
+                    d3.select(".slice:nth-child(" + (picked + 1) + ") path")
+                        .attr("fill", "#111");
+                    //populate question
+                    d3.select("#question h1")
+                        .text(data[picked].question);
+                    oldrotation = rotation;
+              
+                    /* Get the result value from object "data" */
+                    console.log(data[picked].value)
+              
+                    /* Comment the below line for restrict spin to sngle time */
+                    container.on("click", spin);
+                });
+        }
+        //make arrow
+        svg.append("g")
+            .attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h/2)+padding.top) + ")")
+            .append("path")
+            .attr("d", "M-" + (r*.15) + ",0L0," + (r*.05) + "L0,-" + (r*.05) + "Z")
+            .style({"fill":"black"});
+        //draw spin circle
+        container.append("circle")
+            .attr("cx", 0)
+            .attr("cy", 0)
+            .attr("r", 60)
+            .style({"fill":"white","cursor":"pointer"});
+        //spin text
+        container.append("text")
+            .attr("x", 0)
+            .attr("y", 15)
+            .attr("text-anchor", "middle")
+            .text("SPIN")
+            .style({"font-weight":"bold", "font-size":"30px"});
+        
+        
+        function rotTween(to) {
+          var i = d3.interpolate(oldrotation % 360, rotation);
+          return function(t) {
+            return "rotate(" + i(t) + ")";
+          };
+        }
+        
+        
+        function getRandomNumbers(){
+            var array = new Uint16Array(1000);
+            var scale = d3.scale.linear().range([360, 1440]).domain([0, 100000]);
+            if(window.hasOwnProperty("crypto") && typeof window.crypto.getRandomValues === "function"){
+                window.crypto.getRandomValues(array);
+                console.log("works");
+            } else {
+                //no support for crypto, get crappy random numbers
+                for(var i=0; i < 1000; i++){
+                    array[i] = Math.floor(Math.random() * 100000) + 1;
+                }
+            }
+            return array;
+        }
+
+   </script>
+   <script type="text/javascript">
+     // when animating on canvas, it is best to use requestAnimationFrame instead of setTimeout or setInterval
+// not supported in all browsers though and sometimes needs a prefix, so we need a shim
+window.requestAnimFrame = ( function() {
+  return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        function( callback ) {
+          window.setTimeout( callback, 1000 / 60 );
+        };
+})();
+
+// now we will setup our basic variables for the demo
+var canvas = document.getElementById( 'canvas' ),
+    ctx = canvas.getContext( '2d' ),
+    // full screen dimensions
+    cw = window.innerWidth,
+    ch = window.innerHeight,
+    // firework collection
+    fireworks = [],
+    // particle collection
+    particles = [],
+    // starting hue
+    hue = 120,
+    // when launching fireworks with a click, too many get launched at once without a limiter, one launch per 5 loop ticks
+    limiterTotal = 5,
+    limiterTick = 0,
+    // this will time the auto launches of fireworks, one launch per 80 loop ticks
+    timerTotal = 80,
+    timerTick = 0,
+    mousedown = false,
+    // mouse x coordinate,
+    mx,
+    // mouse y coordinate
+    my;
+    
+// set canvas dimensions
+canvas.width = cw;
+canvas.height = ch;
+
+// now we are going to setup our function placeholders for the entire demo
+
+// get a random number within a range
+function random( min, max ) {
+  return Math.random() * ( max - min ) + min;
+}
+
+// calculate the distance between two points
+function calculateDistance( p1x, p1y, p2x, p2y ) {
+  var xDistance = p1x - p2x,
+      yDistance = p1y - p2y;
+  return Math.sqrt( Math.pow( xDistance, 2 ) + Math.pow( yDistance, 2 ) );
+}
+
+// create firework
+function Firework( sx, sy, tx, ty ) {
+  // actual coordinates
+  this.x = sx;
+  this.y = sy;
+  // starting coordinates
+  this.sx = sx;
+  this.sy = sy;
+  // target coordinates
+  this.tx = tx;
+  this.ty = ty;
+  // distance from starting point to target
+  this.distanceToTarget = calculateDistance( sx, sy, tx, ty );
+  this.distanceTraveled = 0;
+  // track the past coordinates of each firework to create a trail effect, increase the coordinate count to create more prominent trails
+  this.coordinates = [];
+  this.coordinateCount = 3;
+  // populate initial coordinate collection with the current coordinates
+  while( this.coordinateCount-- ) {
+    this.coordinates.push( [ this.x, this.y ] );
+  }
+  this.angle = Math.atan2( ty - sy, tx - sx );
+  this.speed = 2;
+  this.acceleration = 1.05;
+  this.brightness = random( 50, 70 );
+  // circle target indicator radius
+  this.targetRadius = 1;
+}
+
+// update firework
+Firework.prototype.update = function( index ) {
+  // remove last item in coordinates array
+  this.coordinates.pop();
+  // add current coordinates to the start of the array
+  this.coordinates.unshift( [ this.x, this.y ] );
+  
+  // cycle the circle target indicator radius
+  if( this.targetRadius < 8 ) {
+    this.targetRadius += 0.3;
+  } else {
+    this.targetRadius = 1;
+  }
+  
+  // speed up the firework
+  this.speed *= this.acceleration;
+  
+  // get the current velocities based on angle and speed
+  var vx = Math.cos( this.angle ) * this.speed,
+      vy = Math.sin( this.angle ) * this.speed;
+  // how far will the firework have traveled with velocities applied?
+  this.distanceTraveled = calculateDistance( this.sx, this.sy, this.x + vx, this.y + vy );
+  
+  // if the distance traveled, including velocities, is greater than the initial distance to the target, then the target has been reached
+  if( this.distanceTraveled >= this.distanceToTarget ) {
+    createParticles( this.tx, this.ty );
+    // remove the firework, use the index passed into the update function to determine which to remove
+    fireworks.splice( index, 1 );
+  } else {
+    // target not reached, keep traveling
+    this.x += vx;
+    this.y += vy;
+  }
+}
+
+// draw firework
+Firework.prototype.draw = function() {
+  ctx.beginPath();
+  // move to the last tracked coordinate in the set, then draw a line to the current x and y
+  ctx.moveTo( this.coordinates[ this.coordinates.length - 1][ 0 ], this.coordinates[ this.coordinates.length - 1][ 1 ] );
+  ctx.lineTo( this.x, this.y );
+  ctx.strokeStyle = 'hsl(' + hue + ', 100%, ' + this.brightness + '%)';
+  ctx.stroke();
+  
+  ctx.beginPath();
+  // draw the target for this firework with a pulsing circle
+  ctx.arc( this.tx, this.ty, this.targetRadius, 0, Math.PI * 2 );
+  ctx.stroke();
+}
+
+// create particle
+function Particle( x, y ) {
+  this.x = x;
+  this.y = y;
+  // track the past coordinates of each particle to create a trail effect, increase the coordinate count to create more prominent trails
+  this.coordinates = [];
+  this.coordinateCount = 5;
+  while( this.coordinateCount-- ) {
+    this.coordinates.push( [ this.x, this.y ] );
+  }
+  // set a random angle in all possible directions, in radians
+  this.angle = random( 0, Math.PI * 2 );
+  this.speed = random( 1, 10 );
+  // friction will slow the particle down
+  this.friction = 0.95;
+  // gravity will be applied and pull the particle down
+  this.gravity = 1;
+  // set the hue to a random number +-20 of the overall hue variable
+  this.hue = random( hue - 20, hue + 20 );
+  this.brightness = random( 50, 80 );
+  this.alpha = 1;
+  // set how fast the particle fades out
+  this.decay = random( 0.015, 0.03 );
+}
+
+// update particle
+Particle.prototype.update = function( index ) {
+  // remove last item in coordinates array
+  this.coordinates.pop();
+  // add current coordinates to the start of the array
+  this.coordinates.unshift( [ this.x, this.y ] );
+  // slow down the particle
+  this.speed *= this.friction;
+  // apply velocity
+  this.x += Math.cos( this.angle ) * this.speed;
+  this.y += Math.sin( this.angle ) * this.speed + this.gravity;
+  // fade out the particle
+  this.alpha -= this.decay;
+  
+  // remove the particle once the alpha is low enough, based on the passed in index
+  if( this.alpha <= this.decay ) {
+    particles.splice( index, 1 );
+  }
+}
+
+
+
+// draw particle
+Particle.prototype.draw = function() {
+    
+  ctx. beginPath();
+  // move to the last tracked coordinates in the set, then draw a line to the current x and y
+  ctx.moveTo( this.coordinates[ this.coordinates.length - 1 ][ 0 ], this.coordinates[ this.coordinates.length - 1 ][ 1 ] );
+  ctx.lineTo( this.x, this.y );
+  ctx.strokeStyle = 'hsla(' + this.hue + ', 100%, ' + this.brightness + '%, ' + this.alpha + ')';
+  ctx.stroke();
+  
+  
+}
+
+// create particle group/explosion
+function createParticles( x, y ) {
+  // increase the particle count for a bigger explosion, beware of the canvas performance hit with the increased particles though
+  var particleCount = 30;
+  while( particleCount-- ) {
+    particles.push( new Particle( x, y ) );
+  }
+}
+
+// main demo loop
+function loop() {
+  // this function will run endlessly with requestAnimationFrame
+  requestAnimFrame( loop );
+  
+  // increase the hue to get different colored fireworks over time
+  hue += 0.5;
+  
+  // normally, clearRect() would be used to clear the canvas
+  // we want to create a trailing effect though
+  // setting the composite operation to destination-out will allow us to clear the canvas at a specific opacity, rather than wiping it entirely
+  ctx.globalCompositeOperation = 'destination-out';
+  // decrease the alpha property to create more prominent trails
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  ctx.fillRect( 0, 0, cw, ch );
+  // change the composite operation back to our main mode
+  // lighter creates bright highlight points as the fireworks and particles overlap each other
+  ctx.globalCompositeOperation = 'lighter';
+  
+    var text = "HAPPY BIRTHDAY TO YOU !!";  
+  ctx.font = "50px sans-serif";
+  var textData = ctx.measureText(text);
+  ctx.fillStyle = "rgba("+parseInt(random(0,255))+","+parseInt(random(0,255))+","+parseInt(random(0,255))+",0.3)";
+  ctx.fillText(text,cw /2-textData.width/2,ch/2); 
+  
+  // loop over each firework, draw it, update it
+  var i = fireworks.length;
+  while( i-- ) {
+    fireworks[ i ].draw();
+    fireworks[ i ].update( i );
+  }
+  
+  // loop over each particle, draw it, update it
+  var i = particles.length;
+  while( i-- ) {
+    particles[ i ].draw();
+    particles[ i ].update( i );
+  }
+  
+  // launch fireworks automatically to random coordinates, when the mouse isn't down
+  if( timerTick >= timerTotal ) {
+    if( !mousedown ) {
+      // start the firework at the bottom middle of the screen, then set the random target coordinates, the random y coordinates will be set within the range of the top half of the screen
+      
+      for(var h=0;h<50;h++)
+      {
+           fireworks.push( new Firework( cw / 2, ch/2, random( 0, cw ), random( 0, ch  ) ) );
+      }
+      
+      
+      timerTick = 0;
+    }
+  } else {
+    timerTick++;
+  }
+  
+  // limit the rate at which fireworks get launched when mouse is down
+  if( limiterTick >= limiterTotal ) {
+    if( mousedown ) {
+      // start the firework at the bottom middle of the screen, then set the current mouse coordinates as the target
+      fireworks.push( new Firework( cw / 2, ch/2, mx, my ) );
+      limiterTick = 0;
+    }
+  } else {
+    limiterTick++;
+  }
+}
+
+// mouse event bindings
+// update the mouse coordinates on mousemove
+canvas.addEventListener( 'mousemove', function( e ) {
+  mx = e.pageX - canvas.offsetLeft;
+  my = e.pageY - canvas.offsetTop;
+});
+
+// toggle mousedown state and prevent canvas from being selected
+canvas.addEventListener( 'mousedown', function( e ) {
+  e.preventDefault();
+  mousedown = true;
+});
+
+canvas.addEventListener( 'mouseup', function( e ) {
+  e.preventDefault();
+  mousedown = false;
+});
+
+// once the window loads, we are ready for some fireworks!
+window.onload = loop;
+
+
+   </script>
+  
+    
+  </body>
+</html>
